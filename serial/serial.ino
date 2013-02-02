@@ -10,9 +10,14 @@ void setup() {
   }
 
   Serial.begin(9600);
+
+  Serial.println("penis");
 }
 
 void loop() {
+}
+
+void serialEvent() {
   char request;
   char type;
   char numChar;
@@ -22,16 +27,17 @@ void loop() {
   boolean result;
 
   if (Serial.available() > 0) {
-    if (Serial.available() % 3 == 0) {
+    Serial.println(Serial.peek());
+    if (Serial.available() % 3 == 0 && Serial.peek() == 'r') {
       while (Serial.available() > 0) {
         request = Serial.read();
         type = Serial.read();
         numChar = Serial.read();
-  
+
         if (numChar >= '0' && numChar <= '9') {
           number = numChar - '0';
         }
-  
+
         if (number < 0 || number > 9 || type != 'l') {
           Serial.println("e");
         } else {
@@ -45,15 +51,15 @@ void loop() {
       while (Serial.available() > 0) {
         type = Serial.read();
         numChar = Serial.read();
-  
+
         if (numChar >= '0' && numChar <= '9') {
           number = numChar - '0';
         }
-  
+
         if (number != -1) {
           result = toggle(type, number, error);
         }
-  
+
         if (error) {
           Serial.println("e");
         } else {
@@ -78,8 +84,6 @@ void loop() {
 
 
   }
-
-  delay(250);
 }
 
 boolean toggle(char type, int number, boolean &error) {

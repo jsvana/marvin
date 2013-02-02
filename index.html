@@ -7,33 +7,33 @@
 		<script src="/socket.io/socket.io.js"></script>
 		<script>
 			var socket = io.connect('http://141.219.207.66:8080');
+			var lights = [];
 
 			socket.emit('login', { username: 'test', password: 'hunter2' });
 
-			$(function() {
-				var lights = $('#lights');
+			socket.on('setup', function(data) {
+				var el = $('#lights');
 
-				for (var i = 0; i < 10; i++) {
-					$(lights).append('<img id="light' + i + '" class="light" data-id="' + i + '" src="/public/light_off.png">');
+				for (var i in data.lights) {
+					if (data.lights[i]) {
+						lights[i] = data.lights[i];
+						$(el).append('<div><img id="light' + i + '" class="light" data-id="' + i + '" src="/public/light_' + (lights[i].status ? 'on' : 'off') + '.png"><span>' + lights[i].description + '</span></div>');
+					}
 				}
+			});
 
+			$(function() {
 				socket.on('update', function(data) {
-					var output = data.data.split('');
-					console.log(output);
+					var light = data.light;
 
-					if (output[0] === 'l') {
-						var light = $('#light' + output[1]);
-
-						if (output[2] === '+') {
-							$(light).attr('src', '/public/light_on.png');
-						} else {
-							$(light).attr('src', '/public/light_off.png');
-						}
+					if (light) {
+						$('#light' + light.index).attr('src', '/public/light_' + (light.status ? 'on' : 'off') + '.png');
+						lights[light.index] = light;
 					}
 				});
 
-				$('.light').on('click', function() {
-					socket.emit('toggle', { type: 'l', number: $(this).data('id') });
+				$(document).on('click', '.light', function() {
+					socket.emit('toggle', { type: 'l', index: $(this).data('id') });
 				});
 			});
 		</script>

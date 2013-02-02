@@ -6,6 +6,7 @@ var app = express();
 var http = require('http');
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
+var database = require('./database');
 
 var log = require('./log').log;
 var error = require('./log').error;
@@ -22,6 +23,8 @@ io.set('log level', 1);
 
 var lights = [];
 
+database.initialize();
+
 exec('ls /dev | grep --colour=never tty.usb', function (error, stdout, stderr) {
 	if (stdout === '') {
 		err('No USB device detected.');
@@ -29,10 +32,6 @@ exec('ls /dev | grep --colour=never tty.usb', function (error, stdout, stderr) {
 	}
 
 	var device = stdout.replace(/(\n|\r)+$/, '');
-
-	for (var i = 0; i < 10; i++) {
-		lights.push(false);
-	}
 
 	serialPort = new SerialPort.SerialPort('/dev/' + device, {
 		baudrate: 9600,
@@ -44,20 +43,33 @@ exec('ls /dev | grep --colour=never tty.usb', function (error, stdout, stderr) {
 	serialPort.on('open', function () {
 		log('Connected to Arduino on /dev/' + device);
 
-
-
 		ready = true;
+
+		database.select("SELECT * FROM lights;", function(err, row) {
+			lights[row.index] = row;
+		});
+
+		setTimeout(function() {
+			log('Set light status');
+			for (var i in lights) {
+				console.log(lights[i]);
+				if (lights[i].status === 1) {
+					//serialPort.write('sl' + lights[i].index);
+				}
+			}
+		}, 1000);
+
 		serialPort.on('data', function(data) {
 			data = data.replace(/(\n|\r)+$/, '');
 			log('Received: ' + data);
 
 			if (data.charAt(1) === 'r') {
 				if (data.charAt(2) === 'l') {
-					lights[parseInt(data.charAt(3), 10)] = data.charAt(4) === '+';
-					log('Set light');
+					lights[parseInt(data.charAt(3), 10)].status = data.charAt(4) === '+';
 				}
+			} else {
+				io.sockets.emit('update', { light: lights[parseInt(data.charAt(1), 10)] });
 			}
-			io.sockets.emit('update', { data: data });
 		});
 	});
 });
@@ -72,6 +84,8 @@ io.sockets.on('connection', function(socket) {
 	socket.on('login', function(data) {
 		if (data.username === 'test' && data.password === 'hunter2') {
 			socket.set('loggedIn', true);
+
+			socket.emit('setup', { lights: lights });
 		}
 	});
 
@@ -81,14 +95,17 @@ io.sockets.on('connection', function(socket) {
 				var msg;
 
 				if (data.type === 'l') {
-					lights[data.number] = lights[data.number] ? false : true;
-					msg = 'Toggle light ' + data.number + ' '
-						+ (lights[data.number] ? 'on' : 'off');
+					lights[data.index].status = lights[data.index].status ? false : true;
+					database.update('UPDATE lights SET "status"='
+						+ (lights[data.index].status ? '1' : '0') + ' WHERE "id"='
+						+ lights[data.index].id);
+					msg = 'Toggle light ' + data.index + ' '
+						+ (lights[data.index].status ? 'on' : 'off');
 				}
 
 				log(msg);
-				serialPort.write(data.type + data.number);
-				log('Sent: ' + data.type + data.number);
+				serialPort.write('s' + data.type + data.index);
+				log('Sent: s' + data.type + data.index);
 			} else {
 				error('Not logged in');
 			}
