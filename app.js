@@ -8,8 +8,7 @@ var server = http.createServer(app);
 var io = require('socket.io').listen(server);
 var database = require('./database');
 
-var log = require('./log').log;
-var error = require('./log').error;
+var Log = require('./log');
 
 app.use(express.bodyParser());
 app.use('/public', express.static(__dirname + "/public"));
@@ -27,7 +26,7 @@ database.initialize();
 
 exec('ls /dev | grep --colour=never tty.usb', function (error, stdout, stderr) {
 	if (stdout === '') {
-		err('No USB device detected.');
+		Log.error('No USB device detected.');
 		process.exit(1);
 	}
 
@@ -41,7 +40,7 @@ exec('ls /dev | grep --colour=never tty.usb', function (error, stdout, stderr) {
 	ready = false;
 
 	serialPort.on('open', function () {
-		log('Connected to Arduino on /dev/' + device);
+		Log.log('Connected to Arduino on /dev/' + device);
 
 		ready = true;
 
@@ -50,9 +49,8 @@ exec('ls /dev | grep --colour=never tty.usb', function (error, stdout, stderr) {
 		});
 
 		setTimeout(function() {
-			log('Set light status');
+			Log.log('Set light status');
 			for (var i in lights) {
-				console.log(lights[i]);
 				if (lights[i].status === 1) {
 					//serialPort.write('sl' + lights[i].index);
 				}
@@ -61,7 +59,7 @@ exec('ls /dev | grep --colour=never tty.usb', function (error, stdout, stderr) {
 
 		serialPort.on('data', function(data) {
 			data = data.replace(/(\n|\r)+$/, '');
-			log('Received: ' + data);
+			Log.log('Received: ' + data);
 
 			if (data.charAt(1) === 'r') {
 				if (data.charAt(2) === 'l') {
@@ -103,9 +101,9 @@ io.sockets.on('connection', function(socket) {
 						+ (lights[data.index].status ? 'on' : 'off');
 				}
 
-				log(msg);
+				Log.log(msg);
 				serialPort.write('s' + data.type + data.index);
-				log('Sent: s' + data.type + data.index);
+				Log.log('Sent: s' + data.type + data.index);
 			} else {
 				error('Not logged in');
 			}
