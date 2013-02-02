@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Test</title>
+
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<script>
+			var socket = io.connect('http://141.219.207.66:8080');
+
+			socket.emit('login', { username: 'test', password: 'hunter2' });
+
+			$(function() {
+				var lights = $('#lights');
+
+				for (var i = 0; i < 10; i++) {
+					$(lights).append('<img id="light' + i + '" class="light" data-id="' + i + '" src="/public/light_off.png">');
+				}
+
+				socket.on('update', function(data) {
+					var output = data.data.split('');
+					console.log(output);
+
+					if (output[0] === 'l') {
+						var light = $('#light' + output[1]);
+
+						if (output[2] === '+') {
+							$(light).attr('src', '/public/light_on.png');
+						} else {
+							$(light).attr('src', '/public/light_off.png');
+						}
+					}
+				});
+
+				$('.light').on('click', function() {
+					socket.emit('toggle', { type: 'l', number: $(this).data('id') });
+				});
+			});
+		</script>
+	</head>
+
+	<body>
+		<div id="lights"></div>
+	</body>
+</html>
