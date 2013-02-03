@@ -5,10 +5,10 @@ var express = require('express');
 var app = express();
 var http = require('http');
 var server = http.createServer(app);
-var io = require('socket.io').listen(server);
+var io = require('socket.io');
 var database = require('./database');
 
-var Log = require('./log');
+var logger = require('./log');
 
 app.use(express.bodyParser());
 app.use('/public', express.static(__dirname + "/public"));
@@ -19,6 +19,9 @@ var serialPort;
 var ready = false;
 
 io.set('log level', 0);
+logger.level = 1;
+
+io.listen(server);
 
 var lights = [];
 
@@ -26,7 +29,7 @@ database.initialize();
 
 SerialPort.list(function(err, ports) {
 	if (ports.length === 0) {
-		Log.error('No Arduino detected.');
+		logger.error('No Arduino detected.');
 		process.exit(1);
 	}
 
@@ -40,7 +43,7 @@ SerialPort.list(function(err, ports) {
 	ready = false;
 
 	serialPort.on('open', function () {
-		Log.log('Connected to Arduino on ' + device);
+		logger.log('Connected to Arduino on ' + device);
 
 		ready = true;
 
@@ -50,7 +53,7 @@ SerialPort.list(function(err, ports) {
 
 		serialPort.on('data', function(data) {
 			data = data.replace(/(\n|\r)+$/, '');
-			Log.debug('Received: ' + data);
+			logger.debug('Received: ' + data);
 
 			if (data.charAt(1) === 'r') {
 				if (data.charAt(2) === 'l') {
@@ -74,7 +77,7 @@ io.sockets.on('connection', function(socket) {
 		if (data.username === 'test' && data.password === 'hunter2') {
 			socket.set('loggedIn', true);
 
-			Log.log('User ' + data.username + ' logged in');
+			logger.log('User ' + data.username + ' logged in');
 
 			socket.emit('setup', { lights: lights });
 		}
@@ -94,11 +97,11 @@ io.sockets.on('connection', function(socket) {
 						+ (lights[data.index].status ? 'on' : 'off');
 				}
 
-				Log.debug(msg);
+				logger.debug(msg);
 				serialPort.write('s' + data.type + data.index);
-				Log.debug('Sent: s' + data.type + data.index);
+				logger.debug('Sent: s' + data.type + data.index);
 			} else {
-				Log.error('Not logged in');
+				logger.error('Not logged in');
 			}
 		});
   });

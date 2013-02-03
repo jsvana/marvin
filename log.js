@@ -1,15 +1,23 @@
 var colors = require('colors');
 
-module.exports = {
-	log: function(message) {
-		console.log((new Date()).toISOString().cyan + ' [LOG]'.green + ' ' + message);
-	},
+var Logger = function(level) {
+	this.level = level;
 
-	error: function(message) {
+	this.log = function(message) {
+		if (this.level >= 1) {
+			console.log((new Date()).toISOString().cyan + ' [LOG]'.green + ' ' + message);
+		}
+	};
+
+	this.error =  function(message) {
 		console.log((new Date()).toISOString().cyan + ' [ERROR]'.red + ' ' + message);
-	},
+	};
 
-	debug: function(message) {
-		console.log((new Date()).toISOString().cyan + ' [DEBUG]'.blue + ' ' + message);
-	}
-};
+	this.debug = function(message) {
+		if (this.level >= 2) {
+			console.log((new Date()).toISOString().cyan + ' [DEBUG]'.blue + ' ' + message);
+		}
+	};
+}
+
+module.exports = new Logger();
