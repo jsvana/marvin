@@ -7,19 +7,20 @@ var http = require('http');
 var server = http.createServer(app);
 var options = { 'log level': 0 };
 var io = require('socket.io').listen(server, options);
-var database = require('./database');
 
+var database = require('./database');
+var config = require('./config');
 var logger = require('./logger');
 
 app.use(express.bodyParser());
 app.use('/public', express.static(__dirname + "/public"));
 
-server.listen(8080);
+server.listen(config.port);
 
 var serialPort;
 var ready = false;
 
-logger.level = 1;
+logger.level = 2;
 
 var lights = [];
 
@@ -47,6 +48,7 @@ SerialPort.list(function(err, ports) {
 
 		database.select("SELECT * FROM lights;", function(err, row) {
 			lights[row.index] = row;
+			logger.debug(row);
 		});
 
 		serialPort.on('data', function(data) {
@@ -61,6 +63,8 @@ SerialPort.list(function(err, ports) {
 				io.sockets.emit('update', { light: lights[parseInt(data.charAt(1), 10)] });
 			}
 		});
+
+		logger.log('Server started, listening on ' + config.port);
 	});
 });
 
