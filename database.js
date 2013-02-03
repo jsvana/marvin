@@ -1,13 +1,12 @@
 var fs = require('fs');
 var sqlite3 = require('sqlite3').verbose();
-var log = require('./log').log;
-var error = require('./log').error;
+var logger = require('./logger');
 
 fs.exists('marvin.sqlite', function (exists) {
 	db = new sqlite3.Database('marvin.sqlite');
 
 	if (!exists) {
-		log('Creating database');
+		logger.log('Creating database');
 		fs.readFile('create.sql', 'utf8', function (err, data) {
 			if (err) {
 				error('Error reading create script: ' + err);
@@ -20,7 +19,7 @@ fs.exists('marvin.sqlite', function (exists) {
 					process.exit(1);
 				}
 
-				log('Database created');
+				logger.log('Database created');
 			});
 		});
 	}
