@@ -5,10 +5,11 @@ var express = require('express');
 var app = express();
 var http = require('http');
 var server = http.createServer(app);
-var io = require('socket.io');
+var options = { 'log level': 0 };
+var io = require('socket.io').listen(server, options);
 var database = require('./database');
 
-var logger = require('./log');
+var logger = require('./logger');
 
 app.use(express.bodyParser());
 app.use('/public', express.static(__dirname + "/public"));
@@ -18,7 +19,6 @@ server.listen(8080);
 var serialPort;
 var ready = false;
 
-io.set('log level', 0);
 logger.level = 1;
 
 io.listen(server);
