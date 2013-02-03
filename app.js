@@ -24,15 +24,15 @@ var lights = [];
 
 database.initialize();
 
-exec('ls /dev | grep --colour=never tty.usb', function (error, stdout, stderr) {
-	if (stdout === '') {
+SerialPort.list(function(err, ports) {
+	if (ports.length === 0) {
 		Log.error('No USB device detected.');
 		process.exit(1);
 	}
 
-	var device = stdout.replace(/(\n|\r)+$/, '');
+	var device = ports[0].comName;
 
-	serialPort = new SerialPort.SerialPort('/dev/' + device, {
+	serialPort = new SerialPort.SerialPort(device, {
 		baudrate: 9600,
 		parser: SerialPort.parsers.readline("\n")
 	});
@@ -105,7 +105,7 @@ io.sockets.on('connection', function(socket) {
 				serialPort.write('s' + data.type + data.index);
 				Log.log('Sent: s' + data.type + data.index);
 			} else {
-				error('Not logged in');
+				Log.error('Not logged in');
 			}
 		});
   });
