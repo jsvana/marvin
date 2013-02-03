@@ -21,8 +21,6 @@ var ready = false;
 
 logger.level = 1;
 
-io.listen(server);
-
 var lights = [];
 
 database.initialize();
