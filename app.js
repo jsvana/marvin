@@ -26,7 +26,7 @@ database.initialize();
 
 SerialPort.list(function(err, ports) {
 	if (ports.length === 0) {
-		Log.error('No USB device detected.');
+		Log.error('No Arduino detected.');
 		process.exit(1);
 	}
 
@@ -40,7 +40,7 @@ SerialPort.list(function(err, ports) {
 	ready = false;
 
 	serialPort.on('open', function () {
-		Log.log('Connected to Arduino on /dev/' + device);
+		Log.log('Connected to Arduino on ' + device);
 
 		ready = true;
 
