@@ -48,15 +48,6 @@ SerialPort.list(function(err, ports) {
 			lights[row.index] = row;
 		});
 
-		setTimeout(function() {
-			Log.log('Set light status');
-			for (var i in lights) {
-				if (lights[i].status === 1) {
-					//serialPort.write('sl' + lights[i].index);
-				}
-			}
-		}, 1000);
-
 		serialPort.on('data', function(data) {
 			data = data.replace(/(\n|\r)+$/, '');
 			Log.debug('Received: ' + data);
