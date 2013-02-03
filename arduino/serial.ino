@@ -14,6 +14,7 @@ void setup() {
 
   Serial.begin(9600);
   Serial.flush();
+	Serial.println("penis");
 }
 
 void loop() {
