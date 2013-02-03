@@ -18,7 +18,7 @@ server.listen(8080);
 var serialPort;
 var ready = false;
 
-io.set('log level', 1);
+io.set('log level', 0);
 
 var lights = [];
 
@@ -59,7 +59,7 @@ SerialPort.list(function(err, ports) {
 
 		serialPort.on('data', function(data) {
 			data = data.replace(/(\n|\r)+$/, '');
-			Log.log('Received: ' + data);
+			Log.debug('Received: ' + data);
 
 			if (data.charAt(1) === 'r') {
 				if (data.charAt(2) === 'l') {
@@ -83,6 +83,8 @@ io.sockets.on('connection', function(socket) {
 		if (data.username === 'test' && data.password === 'hunter2') {
 			socket.set('loggedIn', true);
 
+			Log.log('User ' + data.username + ' logged in');
+
 			socket.emit('setup', { lights: lights });
 		}
 	});
@@ -101,9 +103,9 @@ io.sockets.on('connection', function(socket) {
 						+ (lights[data.index].status ? 'on' : 'off');
 				}
 
-				Log.log(msg);
+				Log.debug(msg);
 				serialPort.write('s' + data.type + data.index);
-				Log.log('Sent: s' + data.type + data.index);
+				Log.debug('Sent: s' + data.type + data.index);
 			} else {
 				Log.error('Not logged in');
 			}
