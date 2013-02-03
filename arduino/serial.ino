@@ -1,8 +1,28 @@
-#include <QueueList.h>
+#include "QueueList.h"
 
 int incomingByte;
 boolean lights[10];
 QueueList<char> command;
+
+boolean toggle(char type, int number, boolean &error) {
+  switch (type) {
+    case 'l':
+      if (number >= 0 && number <= 9) {
+        if (lights[number]) {
+          digitalWrite(number, LOW);
+          lights[number] = false;
+        } else {
+          digitalWrite(number, HIGH);
+          lights[number] = true;
+        }
+
+        return lights[number];
+      }
+      break;
+  }
+
+  error = true;
+}
 
 void setup() {
   int i;
@@ -14,7 +34,6 @@ void setup() {
 
   Serial.begin(9600);
   Serial.flush();
-	Serial.println("penis");
 }
 
 void loop() {
@@ -62,25 +81,5 @@ void serialEvent() {
       }
     }
   }
-}
-
-boolean toggle(char type, int number, boolean &error) {
-  switch (type) {
-    case 'l':
-      if (number >= 0 && number <= 9) {
-        if (lights[number]) {
-          digitalWrite(number, LOW);
-          lights[number] = false;
-        } else {
-          digitalWrite(number, HIGH);
-          lights[number] = true;
-        }
-
-        return lights[number];
-      }
-      break;
-  }
-
-  error = true;
 }
 
