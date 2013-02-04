@@ -43,25 +43,25 @@ void serialEvent() {
   char request;
   char type;
   char number;
-  
+
   boolean error = false;
   boolean result;
-  
+
   if (Serial.available() > 0) {
 		if (Serial.peek() == '\r') {
 			while (command.count() > 0) {
 				Serial.print(command.pop());
 			}
-			Serial.println("\n");
+			Serial.println();
 		} else {
 			command.push(Serial.read());
 		}
-    
+
 /*    if (command.count() >= 3) {
       request = command.pop();
       type = command.pop();
       number = command.pop();
-     
+
      if (request == 'r') {
         if (number >= '0' && number <= '9') {
           Serial.print("r");
@@ -74,7 +74,7 @@ void serialEvent() {
       } else {
         if (number >= '0' && number <= '9') {
           result = toggle(type, number - '0', error);
-          
+
           if (error) {
             Serial.println("e");
           } else {
