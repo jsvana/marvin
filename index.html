@@ -25,6 +25,7 @@
 			$(function() {
 				socket.on('update', function(data) {
 					var light = data.light;
+					console.log(light);
 
 					if (light) {
 						$('#light' + light.index).attr('src', '/public/light_' + (light.status ? 'on' : 'off') + '.png');

@@ -47,8 +47,8 @@ SerialPort.list(function(err, ports) {
 		ready = true;
 
 		database.select("SELECT * FROM lights;", function(err, row) {
+			row.status = row.status === 1;
 			lights[row.index] = row;
-			logger.debug(row);
 		});
 
 		serialPort.on('data', function(data) {
