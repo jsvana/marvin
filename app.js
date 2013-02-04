@@ -11,6 +11,7 @@ var io = require('socket.io').listen(server, options);
 var database = require('./database');
 var config = require('./config');
 var logger = require('./logger');
+var Type = require('./types');
 
 app.use(express.bodyParser());
 app.use('/public', express.static(__dirname + "/public"));
