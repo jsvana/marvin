@@ -48,7 +48,7 @@ void serialEvent() {
   boolean result;
   
   if (Serial.available() > 0) {
-		if (Serial.peek() == '\n') {
+		if (Serial.peek() == '\r') {
 			while (command.count() > 0) {
 				Serial.print(command.pop());
 			}

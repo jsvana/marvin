@@ -55,13 +55,13 @@ SerialPort.list(function(err, ports) {
 			data = data.replace(/(\n|\r)+$/, '');
 			logger.debug('Received: ' + data);
 
-			if (data.charAt(1) === 'r') {
+			/*if (data.charAt(1) === 'r') {
 				if (data.charAt(2) === 'l') {
 					lights[parseInt(data.charAt(3), 10)].status = data.charAt(4) === '+';
 				}
 			} else {
 				io.sockets.emit('update', { light: lights[parseInt(data.charAt(1), 10)] });
-			}
+			}*/
 		});
 
 		logger.log('Server started, listening on ' + config.port);
@@ -107,4 +107,9 @@ io.sockets.on('connection', function(socket) {
 			}
 		});
   });
+
+	socket.on('asdf', function(data) {
+		serialPort.write(data.content + "\r");
+		logger.debug('Sent: ' + data.content);
+	});
 });

@@ -22,6 +22,10 @@
 				}
 			});
 
+			var asdf = function(text) {
+				socket.emit('asdf', { content: text });
+			};
+
 			$(function() {
 				socket.on('update', function(data) {
 					var light = data.light;
