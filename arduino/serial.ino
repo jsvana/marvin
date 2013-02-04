@@ -53,6 +53,7 @@ void serialEvent() {
 				Serial.print(command.pop());
 			}
 			Serial.println();
+      Serial.read();
 		} else {
 			command.push(Serial.read());
 		}
