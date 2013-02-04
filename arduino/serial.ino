@@ -48,9 +48,16 @@ void serialEvent() {
   boolean result;
   
   if (Serial.available() > 0) {
-    command.push(Serial.read());
+		if (Serial.peek() == '\n') {
+			while (command.count() > 0) {
+				Serial.print(command.pop());
+			}
+			Serial.println("\n");
+		} else {
+			command.push(Serial.read());
+		}
     
-    if (command.count() >= 3) {
+/*    if (command.count() >= 3) {
       request = command.pop();
       type = command.pop();
       number = command.pop();
@@ -79,7 +86,7 @@ void serialEvent() {
           Serial.println("e");
         }
       }
-    }
+    }*/
   }
 }
 
