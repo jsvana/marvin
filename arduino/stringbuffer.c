@@ -23,7 +23,7 @@
  */
 #include <stdlib.h>
 #include <string.h>
-#include "stringbuffer.h"
+#include "utility/stringbuffer.h"
 
 //Default buffer size for strings
 #define BUFFER_SIZE 256

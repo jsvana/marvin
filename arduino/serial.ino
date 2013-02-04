@@ -1,8 +1,10 @@
 #include "QueueList.h"
+#include "aJSON.h"
 
 int incomingByte;
 boolean lights[10];
 QueueList<char> command;
+char input[256];
 
 boolean toggle(char type, int number, boolean &error) {
   switch (type) {
@@ -46,14 +48,29 @@ void serialEvent() {
 
   boolean error = false;
   boolean result;
+	int i, len;
+	aJsonObject *root;
 
   if (Serial.available() > 0) {
 		if (Serial.peek() == '\n') {
-			while (command.count() > 0) {
-				Serial.print(command.pop());
+			if (command.count() < 256) {
+				len = command.count();
+
+				for (i = 0; command.count() > 0; i++) {
+					input[i] = command.pop();
+				}
+
+				input[len] = '\0';
+
+				Serial.read();
+
+				root = aJson.parse(input);
+				Serial.println(aJson.getObjectItem(root, "test")->valuestring);
+			} else {
+				while (command.count() > 0) {
+					command.pop();
+				}
 			}
-			Serial.println();
-      Serial.read();
 		} else {
 			command.push(Serial.read());
 		}
