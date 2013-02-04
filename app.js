@@ -109,7 +109,7 @@ io.sockets.on('connection', function(socket) {
   });
 
 	socket.on('asdf', function(data) {
-		serialPort.write(data.content + "\r");
+		serialPort.write(data.content + "\n");
 		logger.debug('Sent: ' + data.content);
 	});
 });
