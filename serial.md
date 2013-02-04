@@ -10,3 +10,11 @@
 
 - Send floating point numbers
 - Send strings of text
+
+## Working Draft
+
+    {
+      "c": 0,
+      "t": 1,
+      "s": 2
+    }
