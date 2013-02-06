@@ -27,6 +27,11 @@ var lights = [];
 
 database.initialize();
 
+var updateLight = function(id, status) {
+	database.update('UPDATE lights SET "status"=' + (status ? '1' : '0')
+		+ ' WHERE "id"=' + id);
+}
+
 SerialPort.list(function(err, ports) {
 	if (ports.length === 0) {
 		logger.error('No Arduino detected.');
@@ -91,12 +96,10 @@ io.sockets.on('connection', function(socket) {
 			if (ready && loggedIn) {
 				var msg;
 
-				if (data.type === 'l') {
+				if (data.type === 'light') {
 					lights[data.index].status = lights[data.index].status ? false : true;
-					database.update('UPDATE lights SET "status"='
-						+ (lights[data.index].status ? '1' : '0') + ' WHERE "id"='
-						+ lights[data.index].id);
-					msg = 'Toggle light ' + data.index + ' '
+					updateLight(lights[data.index].id, lights[data.index].status);
+					msg = 'Toggle light ' + data.index + ' 'child_process
 						+ (lights[data.index].status ? 'on' : 'off');
 				}
 

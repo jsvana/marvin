@@ -73,7 +73,7 @@ void handleCommand(aJsonObject *json) {
 	if (c == COMMAND_SET) {
 		if (t == TYPE_LIGHT) {
 			num = aJson.getObjectItem(json, "n")->valueint;
-			status = aJson.getObjectItem(json, "s")->valuebool;
+			status = aJson.getObjectItem(json, "d")->valuebool;
 			set(t, num, status, error);
 
 			if (error) {
@@ -91,7 +91,7 @@ void handleCommand(aJsonObject *json) {
 				Serial.print(t);
 				Serial.print(",\"n\":");
 				Serial.print(num);
-				Serial.print(",\"s\":");
+				Serial.print(",\"d\":");
 				Serial.print(status ? "true" : "false");
 				Serial.println("}");
 			}
@@ -116,7 +116,7 @@ void handleCommand(aJsonObject *json) {
 				Serial.print(t);
 				Serial.print(",\"n\":");
 				Serial.print(num);
-				Serial.print(",\"s\":");
+				Serial.print(",\"d\":");
 				Serial.print(status ? "true" : "false");
 				Serial.println("}");
 			}
@@ -144,7 +144,7 @@ void handleCommand(aJsonObject *json) {
 				Serial.print(t);
 				Serial.print(",\"n\":");
 				Serial.print(num);
-				Serial.print(",\"s\":");
+				Serial.print(",\"d\":");
 				Serial.print(analogVal);
 				Serial.println("}");
 			}
