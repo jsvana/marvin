@@ -74,6 +74,26 @@ SerialPort.list(function(err, ports) {
 	});
 });
 
+app.get('/login', function(req, res) {
+
+});
+
+app.get('/lights/:id/on', function(req, res) {
+	logger.log(req.params);
+});
+
+app.get('/lights/:id/off', function(req, res) {
+	logger.log(req.params);
+});
+
+app.get('/lights/:id/toggle', function(req, res) {
+	logger.log(req.params);
+});
+
+app.get('/lights/:id', function(req, res) {
+
+});
+
 app.get('/', function (req, res) {
   res.sendfile(__dirname + '/index.html');
 });
@@ -99,7 +119,7 @@ io.sockets.on('connection', function(socket) {
 				if (data.type === 'light') {
 					lights[data.index].status = lights[data.index].status ? false : true;
 					updateLight(lights[data.index].id, lights[data.index].status);
-					msg = 'Toggle light ' + data.index + ' 'child_process
+					msg = 'Toggle light ' + data.index + ' '
 						+ (lights[data.index].status ? 'on' : 'off');
 				}
 
