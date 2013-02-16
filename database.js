@@ -39,7 +39,9 @@ var Database = function() {
 				callback(err, row);
 			});
 
-			completed();
+			if (completed !== undefined) {
+				completed();
+			}
 		}
 	};
 
