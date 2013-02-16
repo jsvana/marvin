@@ -99,8 +99,21 @@ app.get('/login', function(req, res) {
 
 });
 
-app.get('/temperature/:room', function(req, res) {
+app.get('/temperatures/mostrecent', function(req, res) {
+	database.select('SELECT * FROM temperatures ORDER BY "timestamp" DESC LIMIT 1;',
+		function(err, row) {
+		res.write(row);
+	});
+});
 
+app.get('/temperatures', function(req, res) {
+	var data = [];
+	database.select('SELECT * FROM temperatures ORDER BY "timestamp";',
+		function(err, row) {
+		data.push(row);
+	}, function() {
+		res.write(data);
+	});
 });
 
 app.get('/lights/:id/on', function(req, res) {

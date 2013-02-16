@@ -5,7 +5,8 @@
 	"author": "Jay Vana <jsvana@mtu.edu>",
 	"description": "A very depressed home automation system running on an Arduino (not that it asked to be written)",
 	"scripts": {
-		"start": "node ./app.js"
+		"start": "node ./app.js",
+		"deploy": "ssh pi.jsvana.me; cd ~/marvin; git pull; npm start; exit"
 	},
 	"main": "./app.js",
 	"repository": {
