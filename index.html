@@ -4,53 +4,41 @@
 		<title>Test</title>
 
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-		<script src="/socket.io/socket.io.js"></script>
+		<script src=""></script>
 		<script>
-			var socket = io.connect('http://pi.jsvana.me:8080');
-			var lights = [];
-
-			socket.emit('login', { username: 'test', password: 'hunter2' });
-
-			socket.on('setup', function(data) {
-				var el = $('#lights');
-
-				for (var i in data.lights) {
-					if (data.lights[i]) {
-						lights[i] = data.lights[i];
-						$(el).append('<div><img id="light' + i + '" class="light" data-id="' + i + '" src="/public/light_' + (lights[i].status ? 'on' : 'off') + '.png"><span>' + lights[i].description + '</span></div>');
-					}
-				}
-			});
-
-			var asdf = function(text) {
-				socket.emit('asdf', { content: text });
-			};
+			var chart;
 
 			$(function() {
-				socket.on('data', function(data) {
-					var json = JSON.parse(data);
-					var fahrenheit = .1 * json.d + 2.3;
-					console.log(fahrenheit);
-				});
+				$.getJSON('http://pi.jsvana.me:8080/temperatures', function(data) {
+					var temps = [];
+					data.forEach(function(row) {
+						temps.push(row.value);
+					});
 
-				socket.on('update', function(data) {
-					var light = data.light;
-					console.log(light);
-
-					if (light) {
-						$('#light' + light.index).attr('src', '/public/light_' + (light.status ? 'on' : 'off') + '.png');
-						lights[light.index] = light;
-					}
-				});
-
-				$(document).on('click', '.light', function() {
-					socket.emit('toggle', { type: 'l', index: $(this).data('id') });
-				});
+			    $(document).ready(function() {
+						chart = new Highcharts.Chart({
+							chart: {
+								renderTo: 'temperatures',
+								type: 'line',
+								marginRight: 130,
+								marginBottom: 25
+							},
+							title: {
+								text: 'Room Temperature',
+								x: -20 //center
+							},
+							series: [{
+								name: 'Temperatures',
+								data: temps
+							}]
+						});
+					});
+			  });
 			});
 		</script>
 	</head>
 
 	<body>
-		<div id="lights"></div>
+		<div id="temperatures"></div>
 	</body>
 </html>
