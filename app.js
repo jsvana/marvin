@@ -79,7 +79,7 @@ SerialPort.list(function(err, ports) {
 if (config.pollRate > 0) {
 	setInterval(function() {
 		logger.log('asdf');
-	});
+	}, config.pollRate);
 }
 
 app.get('/login', function(req, res) {
