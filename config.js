@@ -6,7 +6,7 @@ var config = {
 		filename: 'marvin.sqlite'
 	},
 
-	pollRate: 60 * 1000
+	pollRate: 30 * 1000
 };
 
 module.exports = config;

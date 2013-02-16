@@ -61,6 +61,18 @@ SerialPort.list(function(err, ports) {
 			data = data.replace(/(\n|\r)+$/, '');
 			logger.debug('Received: ' + data);
 
+			try {
+				var json = JSON.parse(data);
+
+				if (json.c === Type.command.retrieve && json.t === Type.type.analog
+					&& json.n === 0) {
+					database.insert('INSERT INTO temperatures ("value", "timestamp") VALUES ('
+						+ json.d + ', DATETIME(\'now\'));');
+				}
+			} catch (e) {
+
+			}
+
 			io.sockets.emit('data', data);
 
 			/*if (data.charAt(1) === 'r') {
@@ -78,7 +90,8 @@ SerialPort.list(function(err, ports) {
 
 if (config.pollRate > 0) {
 	setInterval(function() {
-		logger.log('asdf');
+		serialPort.write('{"c":' + Type.command.retrieve + ',"t":'
+			+ Type.type.analog + ',"n":0}');
 	}, config.pollRate);
 }
 

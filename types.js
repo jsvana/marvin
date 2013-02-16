@@ -6,6 +6,6 @@ module.exports = {
 	},
 	type: {
 		light: 0,
-		temperature: 1
+		analog: 1
 	}
 }

@@ -41,11 +41,17 @@ var Database = function() {
 		}
 	};
 
-	this.update = function(statement, callback) {
+	this.update = function(statement, params, callback) {
 		if (db) {
-			db.run(statement);
+			db.run(statement, params, callback);
 		}
 	};
+
+	this.insert = function(statement, params, callback) {
+		if (db) {
+			db.run(statement, params, callback);
+		}
+	}
 };
 
 module.exports = new Database();

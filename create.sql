@@ -4,3 +4,9 @@ CREATE TABLE lights (
 	"description" TEXT NOT NULL,
 	"status" BOOLEAN NOT NULL
 );
+
+CREATE TABLE temperatures (
+	"id" INTEGER PRIMARY KEY,
+	"value" INTEGER NOT NULL,
+	"timestamp" DATETIME NOT NULL
+);
