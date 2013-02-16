@@ -5,6 +5,7 @@ module.exports = {
 		retrieve: 2
 	},
 	type: {
-		light: 0
+		light: 0,
+		temperature: 1
 	}
 }

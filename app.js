@@ -76,7 +76,17 @@ SerialPort.list(function(err, ports) {
 	});
 });
 
+if (config.pollRate > 0) {
+	setInterval(function() {
+		logger.log('asdf');
+	});
+}
+
 app.get('/login', function(req, res) {
+
+});
+
+app.get('/temperature/:room', function(req, res) {
 
 });
 
