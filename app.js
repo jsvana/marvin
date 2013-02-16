@@ -91,7 +91,7 @@ SerialPort.list(function(err, ports) {
 if (config.pollRate > 0) {
 	setInterval(function() {
 		serialPort.write('{"c":' + Type.command.retrieve + ',"t":'
-			+ Type.type.analog + ',"n":0}');
+			+ Type.type.analog + ',"n":0}\n');
 	}, config.pollRate);
 }
 
