@@ -52,10 +52,13 @@ SerialPort.list(function(err, ports) {
 
 		ready = true;
 
+		/*
 		database.select("SELECT * FROM lights;", function(err, row) {
+			row = row[0];
 			row.status = row.status === 1;
 			lights[row.index] = row;
 		});
+		*/
 
 		serialPort.on('data', function(data) {
 			data = data.replace(/(\n|\r)+$/, '');
@@ -101,18 +104,16 @@ app.get('/login', function(req, res) {
 
 app.get('/temperatures/mostrecent', function(req, res) {
 	database.select('SELECT * FROM temperatures ORDER BY "timestamp" DESC LIMIT 1;',
-		function(err, row) {
-		res.write(row);
+		function(err, rows) {
+			console.log(rows);
+			res.send(JSON.stringify(rows));
 	});
 });
 
 app.get('/temperatures', function(req, res) {
-	var data = [];
 	database.select('SELECT * FROM temperatures ORDER BY "timestamp";',
-		function(err, row) {
-		data.push(row);
-	}, function() {
-		res.write(data);
+		function(err, rows) {
+		res.send(JSON.stringify(rows));
 	});
 });
 

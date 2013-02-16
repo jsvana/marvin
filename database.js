@@ -33,15 +33,11 @@ var Database = function() {
 		db = new sqlite3.Database(config.database.filename);
 	};
 
-	this.select = function(statement, callback, completed) {
+	this.select = function(statement, callback) {
 		if (db) {
-			db.each(statement, function(err, row) {
+			db.all(statement, [], function(err, row) {
 				callback(err, row);
 			});
-
-			if (completed !== undefined) {
-				completed();
-			}
 		}
 	};
 
