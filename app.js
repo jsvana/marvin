@@ -61,6 +61,8 @@ SerialPort.list(function(err, ports) {
 			data = data.replace(/(\n|\r)+$/, '');
 			logger.debug('Received: ' + data);
 
+			io.sockets.emit('data', data);
+
 			/*if (data.charAt(1) === 'r') {
 				if (data.charAt(2) === 'l') {
 					lights[parseInt(data.charAt(3), 10)].status = data.charAt(4) === '+';

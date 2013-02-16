@@ -27,6 +27,12 @@
 			};
 
 			$(function() {
+				socket.on('data', function(data) {
+					var json = JSON.parse(data);
+					var fahrenheit = .1 * json.d + 2.3;
+					console.log(fahrenheit);
+				});
+
 				socket.on('update', function(data) {
 					var light = data.light;
 					console.log(light);
