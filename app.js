@@ -105,8 +105,7 @@ app.get('/login', function(req, res) {
 app.get('/temperatures/mostrecent', function(req, res) {
 	database.select('SELECT * FROM temperatures ORDER BY "timestamp" DESC LIMIT 1;',
 		function(err, rows) {
-			console.log(rows);
-			res.send(JSON.stringify(rows));
+		res.send(JSON.stringify(rows[0]));
 	});
 });
 
